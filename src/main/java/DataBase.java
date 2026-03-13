@@ -21,15 +21,24 @@ public class DataBase {
         tables.put(tableName, new Table(columnNames));
     }
 
+    private Table getTable(String tableName) {
+        if (!hasTable(tableName)) {
+            throw new IllegalStateException("테이블이 존재하지 않음");
+        }
+        return tables.get(tableName);
+    }
+
     private boolean hasTable(String tableName) {
         return tables.containsKey(tableName);
     }
 
     public String selectAll(String tableName) {
-        if (!hasTable(tableName)) {
-            throw new IllegalStateException("테이블이 존재하지 않음");
-        }
-        return tables.get(tableName).toString();
+        Table table = getTable(tableName);
+        return table.toString();
     }
 
+    public void insert(String tableName, List<String> rowData) {
+        Table table = getTable(tableName);
+        table.addRow(rowData);
+    }
 }

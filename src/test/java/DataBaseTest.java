@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,4 +46,29 @@ class DataBaseTest {
         }
     }
 
+    @Nested
+    @DisplayName("데이터 삽입")
+    class InsertData {
+        @BeforeEach
+        void initTable() {
+            List<String> columnNames = List.of("age", "name");
+            db.create("users", columnNames);
+        }
+
+        @Test
+        @DisplayName("테이블에 새로운 row를 추가")
+        void insert() {
+            db.insert("users", List.of("25", "gabi"));
+            db.insert("users", List.of("27", "hana"));
+            db.insert("users", List.of("29", "wanja"));
+            db.insert("users", List.of("30", "jon"));
+
+            assertThat(db.selectAll("users")).isEqualToIgnoringWhitespace(
+                    "id age name\n"
+                            + "1 25 gabi\n"
+                            + "2 27 hana\n"
+                            + "3 29 wanja\n"
+                            + "4 30 jon");
+        }
+    }
 }
