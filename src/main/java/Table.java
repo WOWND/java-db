@@ -25,13 +25,30 @@ public class Table {
         rows.put(id++, new Row(values));
     }
 
-    @Override
-    public String toString() {
+    public String findRow(String columnName, String operator, String conditionValue) {
+        int columnIndex = columnNames.indexOf(columnName);
+        if (columnIndex < 0) {
+            throw new IllegalArgumentException("존재하지 않는 컬럼명");
+        }
+
+        List<Row> filtered = rows.values().stream()
+                .filter(row -> row.matches(columnIndex, operator, conditionValue))
+                .toList();
+
+        return formatTable(columnNames,filtered);
+    }
+
+    private String formatTable(List<String> columnNames, Iterable<Row> rows) {
         StringBuilder sb = new StringBuilder();
         sb.append(String.join(" ", columnNames));
-        for (Row row : rows.values()) {
+        for (Row row : rows) {
             sb.append("\n").append(row);
         }
         return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return formatTable(columnNames, rows.values());
     }
 }

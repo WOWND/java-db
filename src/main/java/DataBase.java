@@ -1,7 +1,6 @@
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 public class DataBase {
     private final Map<String, Table> tables;
@@ -32,9 +31,15 @@ public class DataBase {
         return tables.containsKey(tableName);
     }
 
-    public String selectAll(String tableName) {
+    public String findAll(String tableName) {
         Table table = getTable(tableName);
         return table.toString();
+    }
+
+
+    public String findBy(String tableName, String columnName, String operator, String conditionValue) {
+        Table table = getTable(tableName);
+        return table.findRow(columnName, operator, conditionValue);
     }
 
     public void insert(String tableName, List<String> rowData) {
