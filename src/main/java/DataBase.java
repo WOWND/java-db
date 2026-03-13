@@ -1,50 +1,35 @@
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 public class DataBase {
-    private final Map<String, String> store;
+    private final Map<String, Table> tables;
 
     public DataBase() {
         this(new HashMap<>());
     }
 
-    public DataBase(Map<String, String> store) {
-        this.store = store;
+    public DataBase(Map<String, Table> tables) {
+        this.tables = tables;
     }
 
-    public String set(String key, String value) {
-        store.put(key, value);
-        return "OK";
-    }
-
-    public String get(String key) {
-        validateKeyExists(key);
-        return store.get(key);
-    }
-
-    public String delete(String key) {
-        validateKeyExists(key);
-        store.remove(key);
-        return "OK";
-    }
-
-    private void validateKeyExists(String key) {
-        if (!store.containsKey(key)) {
-            throw new NoSuchElementException("키가 존재하지 않음");
+    public void create(String tableName, List<String> columnNames) {
+        if (hasTable(tableName)) {
+            throw new IllegalStateException("동일한 이름의 테이블이 존재합니다.");
         }
+        tables.put(tableName, new Table(columnNames));
     }
 
-    public String getKeys() {
-        StringBuilder sb = new StringBuilder();
-        for (String key : store.keySet()) {
-            sb.append(key).append(" ");
+    private boolean hasTable(String tableName) {
+        return tables.containsKey(tableName);
+    }
+
+    public String selectAll(String tableName) {
+        if (!hasTable(tableName)) {
+            throw new IllegalStateException("테이블이 존재하지 않음");
         }
-        return sb.toString();
+        return tables.get(tableName).toString();
     }
 
-    public Map<String, String> getAlls() {
-        return store;
-    }
 }
